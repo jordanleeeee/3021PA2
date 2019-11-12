@@ -2,6 +2,7 @@ package models;
 
 import controllers.Renderer;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import models.pipes.Pipe;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -115,6 +116,10 @@ public class PipeQueue {
      */
     public void render(@NotNull Canvas canvas) {
         // TODO
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+        for(int i=0; i<pipeQueue.size(); i++){
+            //gc.drawImage();
+        }
     }
 
     /**

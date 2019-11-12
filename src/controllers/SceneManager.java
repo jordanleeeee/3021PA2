@@ -1,6 +1,7 @@
 package controllers;
 
 import javafx.scene.Scene;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import models.Config;
 import org.jetbrains.annotations.NotNull;
@@ -106,8 +107,8 @@ public class SceneManager {
      * @throws IllegalArgumentException If the {@code pane} is not known.
      */
     public void showPane(@NotNull final Class<? extends GamePane> pane) {
-        // TODO
-        Scene scene = null;
+        //TODO
+        Scene scene= new Scene(null);
         stage.setScene(scene);
     }
 

@@ -86,7 +86,7 @@ public class FXGame {
      */
     private FXGame(int rows, int cols) {
         // TODO
-        this(rows, cols, 0, null, null);
+        this(rows+2, cols+2, 0, null, null);
     }
 
     /**
@@ -144,8 +144,12 @@ public class FXGame {
      */
     public void placePipe(int row, int col) {
         // TODO
-
-
+        if(!map.tryPlacePipe(new Coordinate(row, col), pipeQueue.peek())){
+            return;
+        }
+        pipeQueue.consume();
+        cellStack.push(new FillableCell(new Coordinate(row, col)));
+        numOfSteps.set(numOfSteps.intValue()+1);
     }
 
     /**
@@ -153,6 +157,7 @@ public class FXGame {
      */
     public void skipPipe() {
         // TODO
+        pipeQueue.consume();
     }
 
     /**
@@ -160,6 +165,18 @@ public class FXGame {
      */
     public void undoStep() {
         // TODO
+        FillableCell fillableCell = cellStack.pop();
+        if(fillableCell == null){
+            return;
+        }
+        if(fillableCell.getPipe().get().getFilled()){
+            cellStack.push(fillableCell);
+            return;
+        }
+        else{
+            pipeQueue.undo(fillableCell.getPipe().get());
+            map.undo(fillableCell.coord);
+        }
     }
 
     /**
@@ -185,6 +202,11 @@ public class FXGame {
      */
     public void updateState() {
         // TODO
+        int distance = flowTimer.distance();
+        if(distance<0){
+            return;
+        }
+        map.fillTiles(distance);
     }
 
     /**
@@ -192,7 +214,7 @@ public class FXGame {
      */
     public boolean hasWon() {
         // TODO
-        return false;
+        return map.checkPath();
     }
 
     /**
@@ -200,7 +222,7 @@ public class FXGame {
      */
     public boolean hasLost() {
         // TODO
-        return false;
+        return (map.hasLost() && flowTimer.distance() > 0);
     }
 
     /**

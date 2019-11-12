@@ -11,6 +11,8 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
@@ -98,6 +100,9 @@ public class GameplayPane extends GamePane {
      */
     private void onKeyPressed(KeyEvent event) {
         // TODO
+        if(event.getCode()== KeyCode.U){
+
+        }
     }
 
     /**
@@ -105,6 +110,17 @@ public class GameplayPane extends GamePane {
      */
     private void createWinPopup() {
         // TODO
+        ButtonType back = new ButtonType("Return");
+        ButtonType next = new ButtonType("Next Map");
+        Alert a = new Alert(Alert.AlertType.CONFIRMATION, "Level Cleared!", next, back);
+        a.showAndWait().ifPresent(type -> {
+            if (type == back) {
+                SceneManager.getInstance().showPane(null);
+            }
+            else{
+                loadNextMap();
+            }
+        });
     }
 
     /**
@@ -112,6 +128,7 @@ public class GameplayPane extends GamePane {
      */
     private void loadNextMap() {
         // TODO
+
     }
 
     /**
@@ -119,6 +136,7 @@ public class GameplayPane extends GamePane {
      */
     private void createLosePopup() {
         // TODO
+        Alert a = new Alert(Alert.AlertType.CONFIRMATION, "You lose!", new ButtonType("Return"));
     }
 
     /**
@@ -126,7 +144,16 @@ public class GameplayPane extends GamePane {
      */
     private void doQuitToMenuAction() {
         // TODO
-        doQuitToMenu();
+        Alert a = new Alert(Alert.AlertType.CONFIRMATION,"return to menue?", ButtonType.OK, ButtonType.CANCEL);
+        a.setContentText("game status will lose...");
+        a.showAndWait().ifPresent(type -> {
+            if (type == ButtonType.OK) {
+                doQuitToMenu();
+            }
+            else{
+                a.close();
+            }
+        });
     }
 
     /**
@@ -134,6 +161,7 @@ public class GameplayPane extends GamePane {
      */
     private void doQuitToMenu() {
         // TODO
+        SceneManager.getInstance().showPane(null);
     }
 
     /**

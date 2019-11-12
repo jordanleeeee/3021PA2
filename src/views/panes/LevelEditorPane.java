@@ -93,8 +93,9 @@ public class LevelEditorPane extends GamePane {
     @Override
     void setCallbacks() {
         // TODO
-        returnButton.setOnAction(null);
-        newGridButton.setOnAction(null);
+        returnButton.setOnAction(e->SceneManager.getInstance().showPane(null));
+        newGridButton.setOnAction(e->levelEditor.changeAttributes(rowField.getValue(),
+                colField.getValue(), delayField.getValue()));
         toggleRotationButton.setOnAction(null);
         loadButton.setOnAction(null);
         saveButton.setOnAction(null);

@@ -157,7 +157,30 @@ public class Pipe implements MapElement {
          */
         @NotNull Renderer.CellImage getCellImage(boolean isFilled) {
             // TODO
-            return null;
+            if(isFilled){
+                switch (filledChar){
+                    case PipePatterns.Filled.HORIZONTAL: return new Renderer.CellImage(STRAIGHT_FILLED, 90);
+                    case PipePatterns.Filled.VERTICAL: return new Renderer.CellImage(STRAIGHT_FILLED, 0);
+                    case PipePatterns.Filled.TOP_LEFT: return new Renderer.CellImage(CORNER_FILLED, 0);
+                    case PipePatterns.Filled.TOP_RIGHT: return new Renderer.CellImage(CORNER_FILLED, 90);
+                    case PipePatterns.Filled.BOTTOM_LEFT: return new Renderer.CellImage(CORNER_FILLED, 270);
+                    case PipePatterns.Filled.BOTTOM_RIGHT: return new Renderer.CellImage(CORNER_FILLED, 180);
+                    case PipePatterns.Filled.CROSS: return new Renderer.CellImage(CROSS_FILLED, 0);
+                    default: throw new IllegalStateException();
+                }
+            }
+            else{
+                switch (unfilledChar){
+                    case PipePatterns.Unfilled.HORIZONTAL: return new Renderer.CellImage(STRAIGHT_UNFILLED, 90);
+                    case PipePatterns.Unfilled.VERTICAL: return new Renderer.CellImage(STRAIGHT_UNFILLED, 0);
+                    case PipePatterns.Unfilled.TOP_LEFT: return new Renderer.CellImage(CORNER_UNFILLED, 0);
+                    case PipePatterns.Unfilled.TOP_RIGHT: return new Renderer.CellImage(CORNER_UNFILLED, 90);
+                    case PipePatterns.Unfilled.BOTTOM_LEFT: return new Renderer.CellImage(CORNER_UNFILLED, 270);
+                    case PipePatterns.Unfilled.BOTTOM_RIGHT: return new Renderer.CellImage(CORNER_UNFILLED, 180);
+                    case PipePatterns.Unfilled.CROSS: return new Renderer.CellImage(CROSS_FILLED, 0);
+                    default: throw new IllegalStateException();
+                }
+            }
         }
     }
 }

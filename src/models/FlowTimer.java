@@ -100,6 +100,7 @@ public class FlowTimer {
      */
     FlowTimer(int initialValue) {
         // TODO
+        currentValue.set(-initialValue);
     }
 
     /**
