@@ -3,6 +3,7 @@ package io;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Path;
@@ -30,5 +31,16 @@ public class Serializer {
      */
     public void serializeGameProp(@NotNull final GameProperties prop) throws IOException {
         // TODO
+        File outputFile = new File(path.toString());    //will throw fileNotFound exception
+        PrintWriter writer = new PrintWriter(outputFile);
+        writer.println(prop.rows);
+        writer.println(prop.cols);
+        for (int i = 0; i < prop.rows; i++) {
+            for (int j = 0; j < prop.cols; j++) {
+                writer.print(prop.cells[i][j].toSingleChar());
+            }
+            writer.println();
+        }
+        writer.close();
     }
 }

@@ -3,6 +3,7 @@ package models.map.cells;
 import controllers.Renderer;
 import controllers.ResourceLoader;
 import javafx.scene.image.Image;
+import models.MapElement;
 import org.jetbrains.annotations.NotNull;
 import util.Coordinate;
 import util.Direction;
@@ -11,7 +12,7 @@ import util.PipePatterns;
 /**
  * Represents a source or a sink {@link Cell}.
  */
-public class TerminationCell extends Cell {
+public class TerminationCell extends Cell{
 
     /**
      * Image representing an unfilled termination cell.

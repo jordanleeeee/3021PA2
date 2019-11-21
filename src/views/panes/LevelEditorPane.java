@@ -42,7 +42,7 @@ public class LevelEditorPane extends GamePane {
     private BorderPane delayBox = new BorderPane(null, null, delayField, null, delayText);
 
     private ObservableList<LevelEditorCanvas.CellSelection> cellList = FXCollections.observableList(Arrays.asList(LevelEditorCanvas.CellSelection.values()));
-    private ListView<LevelEditorCanvas.CellSelection> selectedCell = new ListView<>();
+    private ListView<LevelEditorCanvas.CellSelection> selectedCell = new ListView<>(cellList); //????
 
     private Button toggleRotationButton = new BigButton("Toggle Source Rotation");
     private Button loadButton = new BigButton("Load");
@@ -67,6 +67,7 @@ public class LevelEditorPane extends GamePane {
         leftContainer.getChildren().add(colBox);
         leftContainer.getChildren().add(newGridButton);
         leftContainer.getChildren().add(delayBox);
+        selectedCell.setItems(cellList);
         leftContainer.getChildren().add(selectedCell);
         leftContainer.getChildren().add(toggleRotationButton);
         leftContainer.getChildren().add(loadButton);
@@ -83,8 +84,8 @@ public class LevelEditorPane extends GamePane {
     @Override
     void styleComponents() {
         // TODO
-        selectedCell.setMinHeight(Config.LIST_CELL_HEIGHT);
-        selectedCell.setMaxHeight(Config.LIST_CELL_HEIGHT);
+        selectedCell.setMinHeight(Config.LIST_CELL_HEIGHT*6);
+        selectedCell.setMaxHeight(Config.LIST_CELL_HEIGHT*6);
     }
 
     /**
@@ -93,11 +94,20 @@ public class LevelEditorPane extends GamePane {
     @Override
     void setCallbacks() {
         // TODO
-        returnButton.setOnAction(e->SceneManager.getInstance().showPane(null));
+        returnButton.setOnAction(e->SceneManager.getInstance().showPane(MainMenuPane.class));
         newGridButton.setOnAction(e->levelEditor.changeAttributes(rowField.getValue(),
-                colField.getValue(), delayField.getValue()));
-        toggleRotationButton.setOnAction(null);
-        loadButton.setOnAction(null);
-        saveButton.setOnAction(null);
+               colField.getValue(), delayField.getValue()));
+        newGridButton.setOnAction(null);
+        toggleRotationButton.setOnAction(e->levelEditor.toggleSourceTileRotation());
+        loadButton.setOnAction(e->{
+            if(levelEditor.loadFromFile()){
+                //sth
+            }
+            else{
+                //sth
+            }
+        });
+        saveButton.setOnAction(e->levelEditor.saveToFile());
+        centerContainer.setOnMouseClicked(e-> levelEditor.setTile(cellList.get(0), e.getX(), e.getY()));
     }
 }

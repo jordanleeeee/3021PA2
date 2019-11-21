@@ -13,7 +13,7 @@ public class BigVBox extends VBox {
      */
     public BigVBox() {
         // TODO
-        super(20);
+        this(20);
     }
 
     public BigVBox(double spacing) {
@@ -30,6 +30,7 @@ public class BigVBox extends VBox {
 
     {
         // TODO: Add "big-vbox" style
-
+        //setStyle("-fx-background-color: #ddd; -fx-alignment: center; -fx-spacing: 20;");
+        //setStyle("-fx-background-color: #ddd; -fx-spacing: 20;");
     }
 }

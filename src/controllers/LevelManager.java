@@ -66,6 +66,8 @@ public class LevelManager {
      */
     public void setMapDirectory(@NotNull Path mapDirectory) {
         // TODO
+        this.mapDirectory = mapDirectory;
+        //???
     }
 
     /**
@@ -107,6 +109,10 @@ public class LevelManager {
      */
     public void setLevel(@Nullable String levelName) {
         // TODO
+        if(levelName == ""){
+            throw new IllegalArgumentException();
+        }
+        curLevelNameProperty.setValue(levelName);
     }
 
     /**
@@ -125,8 +131,19 @@ public class LevelManager {
      */
     @Nullable
     public String getAndSetNextLevel() {
-        // TODO
-        return null;
+        // TODO ???
+        int currentNameIndex = -1;
+        for(int i=0; i<levelNames.size(); i++){
+            if(levelNames.get(i)==curLevelNameProperty.get()){
+                currentNameIndex = i;
+                break;
+            }
+        }
+        if(currentNameIndex == levelNames.size()-1){
+            return null;
+        }
+        curLevelNameProperty.setValue(levelNames.get(currentNameIndex+1));
+        return levelNames.get(currentNameIndex+1);
     }
 
     @NotNull

@@ -64,12 +64,13 @@ public class SceneManager {
     private Stage stage;
 
     private SceneManager() {
+
         // TODO: Add CSS styles to every scene
-        mainMenuScene.getStylesheets().add("/PA2/resources/assets/styles/styless.css");
-        settingsScene.getStylesheets().add("/PA2/resources/assets/styles/styless.css");
-        levelEditorScene.getStylesheets().add("/PA2/resources/assets/styles/styless.css");
-        levelSelectScene.getStylesheets().add("/PA2/resources/assets/styles/styless.css");
-        gameplayScene.getStylesheets().add("/PA2/resources/assets/styles/styless.css");
+        mainMenuScene.getStylesheets().add("file:resources/assets/styles/styles.css");
+        settingsScene.getStylesheets().add("file:resources/assets/styles/styles.css");
+        levelEditorScene.getStylesheets().add("file:resources/assets/styles/styles.css");
+        levelSelectScene.getStylesheets().add("file:resources/assets/styles/styles.css");
+        gameplayScene.getStylesheets().add("file:resources/assets/styles/styles.css");
     }
 
     /**
@@ -108,8 +109,29 @@ public class SceneManager {
      */
     public void showPane(@NotNull final Class<? extends GamePane> pane) {
         //TODO
-        Scene scene= new Scene(null);
-        stage.setScene(scene);
+        if(pane == GameplayPane.class){
+            stage.setScene(gameplayScene);
+            showScene(gameplayScene);
+        }
+        else if(pane == LevelEditorPane.class){
+            stage.setScene(levelEditorScene);
+            showScene(levelEditorScene);
+        }
+        else if(pane == LevelSelectPane.class){
+            stage.setScene(levelSelectScene);
+            showScene(levelSelectScene);
+        }
+        else if(pane == MainMenuPane.class){
+            stage.setScene(mainMenuScene);
+            showScene(mainMenuScene);
+        }
+        else if(pane == SettingsPane.class){
+            stage.setScene(settingsScene);
+            showScene(settingsScene);
+        }
+        else{
+            throw new IllegalArgumentException();
+        }
     }
 
     /**

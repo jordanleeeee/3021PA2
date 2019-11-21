@@ -25,5 +25,7 @@ public class SideMenuVBox extends VBox {
 
     {
         // TODO: Add "side-menu" styling
+        setStyle("-fx-padding: 20 20 20 20; -fx-alignment: top-center; -fx-background-color: #ccc;");
+
     }
 }

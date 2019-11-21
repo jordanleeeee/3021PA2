@@ -3,15 +3,18 @@ package models.map.cells;
 import controllers.Renderer;
 import controllers.ResourceLoader;
 import javafx.scene.image.Image;
+import models.MapElement;
 import models.map.Map;
 import org.jetbrains.annotations.NotNull;
 import util.Coordinate;
 import util.PipePatterns;
 
+import java.util.regex.MatchResult;
+
 /**
  * Represents a wall in {@link Map}.
  */
-public class Wall extends Cell {
+public class Wall extends Cell{
 
     /**
      * Image representing a wall.

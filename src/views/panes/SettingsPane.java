@@ -2,10 +2,7 @@ package views.panes;
 
 import controllers.AudioManager;
 import controllers.SceneManager;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import models.Config;
@@ -118,8 +115,8 @@ public class SettingsPane extends GamePane {
         // TODO
         infoText.setEditable(false);
         infoText.setWrapText(true);
-        infoText.setStyle("text-area");     //??
-        infoText.setPrefHeight(200);        //??
+        infoText.setStyle("-fx-font-size: 18;");
+        infoText.setPrefHeight(Config.HEIGHT);
     }
 
     /**
@@ -130,7 +127,16 @@ public class SettingsPane extends GamePane {
         // TODO
         returnButton.setOnAction((e)->returnToMainMenu(false));
         saveButton.setOnAction((e)->returnToMainMenu(true));
-        toggleSoundButton.setOnAction(null);
+        toggleSoundButton.setOnAction(e->{
+            if(toggleSoundButton.getText() == "Sound FX: Enabled"){
+                toggleSoundButton.setText("Sound FX: Disabled");
+                AudioManager.getInstance().setEnabled(false);
+            }
+            else{
+                toggleSoundButton.setText("Sound FX: Enabled");
+                AudioManager.getInstance().setEnabled(true);
+            }
+        });
     }
 
     /**
@@ -138,10 +144,10 @@ public class SettingsPane extends GamePane {
      */
     private void fillValues() {
         // TODO
-        rowsField.replaceSelection("8");
-        colsField.replaceSelection("8");
-        delayField.replaceSelection("10");
-        flowField.replaceSelection("5");
+        FXGame.setDefaultRows(rowsField.getValue());
+        FXGame.setDefaultCols(colsField.getValue());
+        FlowTimer.setDefaultDelay(delayField.getValue());
+        FlowTimer.setDefaultFlowDuration(flowField.getValue());
     }
 
     /**
@@ -152,10 +158,18 @@ public class SettingsPane extends GamePane {
     private void returnToMainMenu(final boolean writeback) {
         // TODO
         if(writeback){
-
+            if(!validate().isEmpty()){
+                Alert error = new Alert(Alert.AlertType.ERROR, validate().get(), ButtonType.OK);
+                error.setHeaderText("Validation Failed");
+                error.show();
+            }
+            else{
+                fillValues();
+                SceneManager.getInstance().showPane(MainMenuPane.class);
+            }
         }
-        else {
-
+        else{
+            SceneManager.getInstance().showPane(MainMenuPane.class);
         }
     }
 
@@ -177,25 +191,20 @@ public class SettingsPane extends GamePane {
     @NotNull
     private Optional<String> validate() {
         // TODO
-        String warning = new String();
-
         if(delayField.getValue() < 1){;
-            warning += MSG_BAD_DELAY_NUM;
+            return Optional.of(MSG_BAD_DELAY_NUM);
         }
         if(rowsField.getValue() <= 1){
-            warning += MSG_BAD_ROW_NUM;
+            return Optional.of(MSG_BAD_ROW_NUM);
         }
         if(colsField.getValue() <= 1){
-            warning += MSG_BAD_COL_NUM;
+           return Optional.of(MSG_BAD_COL_NUM);
         }
         if(flowField.getValue() < 1){
-            warning += MSG_BAD_FLOW_NUM;
-        }
-        if(warning == ""){
-            return Optional.empty();
+            return Optional.of(MSG_BAD_FLOW_NUM);
         }
         else{
-            return Optional.of(warning);
+            return Optional.empty();
         }
     }
 }

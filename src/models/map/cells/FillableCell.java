@@ -19,7 +19,7 @@ public class FillableCell extends Cell implements MapElement {
     /**
      * Image representing a cell.
      */
-    private static final Image IMAGE = new Image(ResourceLoader.getResource("assets/images/empty-cell.png"));
+    private static final Image IMAGE = new Image(ResourceLoader.getResource("file:assets/images/empty-cell.png"));
 
     @Nullable
     private final Pipe pipe;
@@ -70,7 +70,7 @@ public class FillableCell extends Cell implements MapElement {
     @Override
     public Renderer.CellImage getImageRep() {
         // TODO
-        return null;
+        return new Renderer.CellImage(IMAGE, 0);
     }
 
     @NotNull

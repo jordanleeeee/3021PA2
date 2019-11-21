@@ -4,9 +4,11 @@ import controllers.LevelManager;
 import controllers.SceneManager;
 import io.Deserializer;
 import javafx.beans.value.ObservableValue;
+import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.ListView;
 import javafx.stage.DirectoryChooser;
+import javafx.stage.Stage;
 import models.FXGame;
 import views.BigButton;
 import views.BigVBox;
@@ -54,6 +56,7 @@ public class LevelSelectPane extends GamePane {
     @Override
     void styleComponents() {
         // TODO
+        playButton.setDisable(true);
     }
 
     /**
@@ -62,8 +65,9 @@ public class LevelSelectPane extends GamePane {
     @Override
     void setCallbacks() {
         // TODO
-        returnButton.setOnAction(null);
+        returnButton.setOnAction(e->SceneManager.getInstance().showPane(MainMenuPane.class));
         chooseMapDirButton.setOnAction((e)->promptUserForMapDirectory());
+        //levelsListView.setOn
         playButton.setOnAction((e)->startGame(false));
         playRandom.setOnAction((e)->startGame(true));
     }
@@ -83,9 +87,7 @@ public class LevelSelectPane extends GamePane {
         if(generateRandom){
 
         }
-        else{
-
-        }
+        SceneManager.getInstance().showPane(GameplayPane.class);
     }
 
     /**
@@ -110,7 +112,7 @@ public class LevelSelectPane extends GamePane {
     private void promptUserForMapDirectory() {
         // TODO
         DirectoryChooser d = new DirectoryChooser();
-        commitMapDirectoryChange(d.getInitialDirectory());
+        commitMapDirectoryChange(d.showDialog(new Stage()));
     }
 
     /**
@@ -120,5 +122,11 @@ public class LevelSelectPane extends GamePane {
      */
     private void commitMapDirectoryChange(File dir) {
         // TODO
+        try{
+            Deserializer deserializer = new Deserializer(dir.toPath());
+        }
+        catch (FileNotFoundException e){
+            return;
+        }
     }
 }

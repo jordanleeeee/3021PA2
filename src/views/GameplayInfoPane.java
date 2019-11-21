@@ -20,10 +20,11 @@ public class GameplayInfoPane extends BigVBox {
 
     public GameplayInfoPane(StringProperty levelNameProperty, IntegerProperty timerProperty, IntegerProperty numMovesProperty, IntegerProperty numUndoProperty) {
         // TODO
-        this.levelNameLabel.setText(levelNameProperty.toString());
-        this.timerLabel.setText(timerProperty.toString());
-        this.numMovesLabel.setText(numMovesProperty.toString());
-        this.numUndoLabel.setText(numUndoProperty.toString());
+        bindTo(levelNameProperty, timerProperty, numMovesProperty, numUndoProperty);
+        this.getChildren().add(levelNameLabel);
+        this.getChildren().add(timerLabel);
+        this.getChildren().add(numMovesLabel);
+        this.getChildren().add(numUndoLabel);
     }
 
     /**
@@ -51,9 +52,9 @@ public class GameplayInfoPane extends BigVBox {
      */
     private void bindTo(StringProperty levelNameProperty, IntegerProperty timerProperty, IntegerProperty numMovesProperty, IntegerProperty numUndoProperty) {
         // TODO
-        this.levelNameLabel.setText(levelNameProperty.toString());
-        this.timerLabel.setText(timerProperty.toString());
-        this.numMovesLabel.setText(numMovesProperty.toString());
-        this.numUndoLabel.setText(numUndoProperty.toString());
+        this.levelNameLabel.setText("Level: " + levelNameProperty.get());
+        this.timerLabel.setText("Time: " + format(timerProperty.get()));
+        this.numMovesLabel.setText("Moves: "+ numMovesProperty.get());
+        this.numUndoLabel.setText("Undo Count: " + numUndoProperty.get());
     }
 }

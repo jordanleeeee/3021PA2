@@ -4,13 +4,12 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.transform.Rotate;
+import models.Config;
 import models.map.cells.Cell;
 import models.pipes.Pipe;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-
-import static models.Config.TILE_SIZE;
 
 /**
  * Helper class for render operations on a {@link Canvas}.
@@ -71,6 +70,8 @@ public class Renderer {
      */
     private static void drawRotatedImage(@NotNull GraphicsContext gc, @NotNull Image image, double angle, double x, double y) {
         // TODO
+        System.out.println("draw rotated image");
+        gc.drawImage(image,x,y);
     }
 
     /**
@@ -81,6 +82,14 @@ public class Renderer {
      */
     public static void renderMap(@NotNull Canvas canvas, @NotNull Cell[][] map) {
         // TODO
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+        for(int i=0; i<map.length; i++){
+            for(int j=0; j<map[0].length; j++) {
+                CellImage temp = map[i][j].getImageRep();
+                drawRotatedImage(gc, temp.image, temp.rotation,
+                        i*Config.TILE_SIZE, j*Config.TILE_SIZE);
+            }
+        }
     }
 
     /**
@@ -91,5 +100,10 @@ public class Renderer {
      */
     public static void renderQueue(@NotNull Canvas canvas, @NotNull List<Pipe> pipeQueue) {
         // TODO
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+        for(int i=0; i<pipeQueue.size(); i++){
+            CellImage temp = pipeQueue.get(i).getImageRep();
+            drawRotatedImage(gc, temp.image, temp.rotation,i*(Config.LIST_CELL_HEIGHT+QUEUE_TILE_PADDING), QUEUE_TILE_PADDING);
+        }
     }
 }

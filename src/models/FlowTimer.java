@@ -100,7 +100,7 @@ public class FlowTimer {
      */
     FlowTimer(int initialValue) {
         // TODO
-        currentValue.set(-initialValue);
+        currentValue.set(-initialValue);    //???
     }
 
     /**
@@ -131,6 +131,15 @@ public class FlowTimer {
      */
     void start() {
         // TODO
+        flowTimer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                if(currentValue.get() % defaultFlowDuration == 0){
+                    //do sth
+                }
+                currentValue.set(currentValue.get()+1);
+            }
+        },0,1000);
     }
 
     /**

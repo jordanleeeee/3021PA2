@@ -55,13 +55,12 @@ public class NumberTextField extends TextField {
      */
     public int getValue() {
         // TODO
-        int value;
         try{
-            value = Integer.parseInt(super.getText());
+            int value = Integer.parseInt(super.getText());
+            return value;
         }
         catch (NumberFormatException e){
             throw e;
         }
-        return value;
     }
 }

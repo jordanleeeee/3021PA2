@@ -7,6 +7,7 @@ import io.Deserializer;
 import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -57,8 +58,10 @@ public class GameplayPane extends GamePane {
     @Override
     void connectComponents() {
         // TODO
+        infoPane = new GameplayInfoPane(new SimpleStringProperty("Generate"), new SimpleIntegerProperty(0), new SimpleIntegerProperty(0), new SimpleIntegerProperty(0));
+        canvasContainer.getChildren().add(infoPane);
+        canvasContainer.getChildren().add(gameplayCanvas);
         topBar.getChildren().add(canvasContainer);
-        topBar.getChildren().add(gameplayCanvas);
         this.setTop(topBar);
         bottomBar.getChildren().add(queueCanvas);
         bottomBar.getChildren().add(quitToMenuButton);
@@ -80,7 +83,6 @@ public class GameplayPane extends GamePane {
     void setCallbacks() {
         // TODO
         gameplayCanvas.setOnMouseClicked((e)->onCanvasClicked(e));
-        this.setOnKeyPressed((e)->onKeyPressed(e));                 //??
         quitToMenuButton.setOnAction((e)->doQuitToMenuAction());
     }
 
@@ -101,7 +103,12 @@ public class GameplayPane extends GamePane {
     private void onKeyPressed(KeyEvent event) {
         // TODO
         if(event.getCode()== KeyCode.U){
-
+            //undo
+            game.undoStep();
+        }
+        if(event.getCode()== KeyCode.S){
+            //skip pipe
+            game.skipPipe();
         }
     }
 
@@ -137,6 +144,7 @@ public class GameplayPane extends GamePane {
     private void createLosePopup() {
         // TODO
         Alert a = new Alert(Alert.AlertType.CONFIRMATION, "You lose!", new ButtonType("Return"));
+        a.show();
     }
 
     /**
@@ -161,7 +169,7 @@ public class GameplayPane extends GamePane {
      */
     private void doQuitToMenu() {
         // TODO
-        SceneManager.getInstance().showPane(null);
+        SceneManager.getInstance().showPane(LevelSelectPane.class);
     }
 
     /**
@@ -171,6 +179,14 @@ public class GameplayPane extends GamePane {
      */
     void startGame(@NotNull FXGame game) {
         // TODO
+        this.game = game;
+
+        if(this.game.hasWon()){
+            createWinPopup();
+        }
+        if(this.game.hasLost()){
+            endGame();
+        }
     }
 
     /**
@@ -178,5 +194,6 @@ public class GameplayPane extends GamePane {
      */
     private void endGame() {
         // TODO
+        createLosePopup();
     }
 }
