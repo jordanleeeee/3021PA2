@@ -6,6 +6,8 @@ import javafx.scene.image.Image;
 import javafx.scene.transform.Rotate;
 import models.Config;
 import models.map.cells.Cell;
+import models.map.cells.FillableCell;
+import models.map.cells.TerminationCell;
 import models.pipes.Pipe;
 import org.jetbrains.annotations.NotNull;
 
@@ -70,8 +72,9 @@ public class Renderer {
      */
     private static void drawRotatedImage(@NotNull GraphicsContext gc, @NotNull Image image, double angle, double x, double y) {
         // TODO
-        System.out.println("draw rotated image");
-        gc.drawImage(image,x,y);
+        //System.out.println("draw rotated image");
+        rotate(gc, angle, x+Config.TILE_SIZE/2, y+Config.TILE_SIZE/2);
+        gc.drawImage(image, x, y);
     }
 
     /**
@@ -82,13 +85,23 @@ public class Renderer {
      */
     public static void renderMap(@NotNull Canvas canvas, @NotNull Cell[][] map) {
         // TODO
+        //System.out.println("map");
+        canvas.setWidth(Config.TILE_SIZE*map[0].length);
+        canvas.setHeight(Config.TILE_SIZE*map.length);
         GraphicsContext gc = canvas.getGraphicsContext2D();
         for(int i=0; i<map.length; i++){
             for(int j=0; j<map[0].length; j++) {
+                //System.out.print(map[i][j].toSingleChar());
                 CellImage temp = map[i][j].getImageRep();
-                drawRotatedImage(gc, temp.image, temp.rotation,
-                        i*Config.TILE_SIZE, j*Config.TILE_SIZE);
+                if(map[i][j] instanceof FillableCell){
+                    FillableCell fillableCell = (FillableCell)map[i][j];
+                    if(!fillableCell.getPipe().isEmpty()){
+                        temp = fillableCell.getPipe().get().getImageRep();
+                    }
+                }
+                drawRotatedImage(gc, temp.image, temp.rotation,j*Config.TILE_SIZE,i*Config.TILE_SIZE);
             }
+            //System.out.println();
         }
     }
 
@@ -100,6 +113,8 @@ public class Renderer {
      */
     public static void renderQueue(@NotNull Canvas canvas, @NotNull List<Pipe> pipeQueue) {
         // TODO
+        canvas.setWidth((Config.TILE_SIZE+QUEUE_TILE_PADDING)*5 - QUEUE_TILE_PADDING*2);
+        canvas.setHeight(Config.TILE_SIZE + QUEUE_TILE_PADDING*2);
         GraphicsContext gc = canvas.getGraphicsContext2D();
         for(int i=0; i<pipeQueue.size(); i++){
             CellImage temp = pipeQueue.get(i).getImageRep();

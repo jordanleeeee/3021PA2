@@ -100,7 +100,8 @@ public class FlowTimer {
      */
     FlowTimer(int initialValue) {
         // TODO
-        currentValue.set(-initialValue);    //???
+        ticksElapsed = -initialValue;
+        currentValue.set(0);    //???
     }
 
     /**
@@ -134,12 +135,20 @@ public class FlowTimer {
         flowTimer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                if(currentValue.get() % defaultFlowDuration == 0){
-                    //do sth
+                ticksElapsed++;
+                System.out.println(ticksElapsed);
+                for(int i=0; i<onTickCallbacks.size(); i++){
+                    onTickCallbacks.get(i).run();
                 }
-                currentValue.set(currentValue.get()+1);
+                if(ticksElapsed % defaultFlowDuration == 0 && ticksElapsed>=0 || ticksElapsed==0){
+                    //filling happened
+                   for(int i=0; i<onFlowCallbacks.size(); i++){
+                        onFlowCallbacks.get(i).run();
+                    }
+                    currentValue.set(currentValue.get()+1);
+                }
             }
-        },0,1000);
+        },1000,1000);
     }
 
     /**
@@ -147,6 +156,7 @@ public class FlowTimer {
      */
     void stop() {
         // TODO
+        flowTimer.cancel();
     }
 
     /**

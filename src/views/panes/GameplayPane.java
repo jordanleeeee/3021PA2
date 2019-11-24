@@ -19,6 +19,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import models.Config;
 import models.FXGame;
 import org.jetbrains.annotations.NotNull;
 import views.BigButton;
@@ -58,7 +59,7 @@ public class GameplayPane extends GamePane {
     @Override
     void connectComponents() {
         // TODO
-        infoPane = new GameplayInfoPane(new SimpleStringProperty("Generate"), new SimpleIntegerProperty(0), new SimpleIntegerProperty(0), new SimpleIntegerProperty(0));
+        infoPane = new GameplayInfoPane(new SimpleStringProperty("<Generate>"), ticksElapsed, new SimpleIntegerProperty(), new SimpleIntegerProperty());
         canvasContainer.getChildren().add(infoPane);
         canvasContainer.getChildren().add(gameplayCanvas);
         topBar.getChildren().add(canvasContainer);
@@ -74,6 +75,9 @@ public class GameplayPane extends GamePane {
     @Override
     void styleComponents() {
         // TODO
+        gameplayCanvas.setStyle("-fx-background-color: rgb(50, 168, 50);");
+        queueCanvas.setStyle("-fx-background-color: #ddd;");
+        bottomBar.setStyle("-fx-padding: 20 20 20 20; -fx-background-color: #ccc;");
     }
 
     /**
@@ -84,6 +88,7 @@ public class GameplayPane extends GamePane {
         // TODO
         gameplayCanvas.setOnMouseClicked((e)->onCanvasClicked(e));
         quitToMenuButton.setOnAction((e)->doQuitToMenuAction());
+        setOnKeyPressed(e->onKeyPressed(e));
     }
 
     /**
@@ -93,6 +98,20 @@ public class GameplayPane extends GamePane {
      */
     private void onCanvasClicked(MouseEvent event) {
         // TODO
+        System.out.println("canvas clicked");
+        int x = (int)event.getX()/TILE_SIZE;
+        int y = (int)event.getY()/TILE_SIZE;
+        game.placePipe(y,x);
+        game.renderQueue(queueCanvas);
+        game.renderMap(gameplayCanvas);
+        updateInfoPane();
+
+        //check if winning after placing a pipe
+        if(game.hasWon()){
+            game.stopCountdown();
+            game.fillAllPipes();
+            createWinPopup();
+        }
     }
 
     /**
@@ -105,10 +124,15 @@ public class GameplayPane extends GamePane {
         if(event.getCode()== KeyCode.U){
             //undo
             game.undoStep();
+            game.renderQueue(queueCanvas);
+            game.renderMap(gameplayCanvas);
+            updateInfoPane();
         }
         if(event.getCode()== KeyCode.S){
             //skip pipe
             game.skipPipe();
+            game.renderQueue(queueCanvas);
+            updateInfoPane();
         }
     }
 
@@ -122,7 +146,7 @@ public class GameplayPane extends GamePane {
         Alert a = new Alert(Alert.AlertType.CONFIRMATION, "Level Cleared!", next, back);
         a.showAndWait().ifPresent(type -> {
             if (type == back) {
-                SceneManager.getInstance().showPane(null);
+                SceneManager.getInstance().showPane(LevelSelectPane.class);
             }
             else{
                 loadNextMap();
@@ -144,7 +168,8 @@ public class GameplayPane extends GamePane {
     private void createLosePopup() {
         // TODO
         Alert a = new Alert(Alert.AlertType.CONFIRMATION, "You lose!", new ButtonType("Return"));
-        a.show();
+        a.showAndWait();
+        SceneManager.getInstance().showPane(LevelSelectPane.class);
     }
 
     /**
@@ -152,14 +177,11 @@ public class GameplayPane extends GamePane {
      */
     private void doQuitToMenuAction() {
         // TODO
-        Alert a = new Alert(Alert.AlertType.CONFIRMATION,"return to menue?", ButtonType.OK, ButtonType.CANCEL);
+        Alert a = new Alert(Alert.AlertType.CONFIRMATION,"return to menu?", ButtonType.OK, ButtonType.CANCEL);
         a.setContentText("game status will lose...");
         a.showAndWait().ifPresent(type -> {
             if (type == ButtonType.OK) {
                 doQuitToMenu();
-            }
-            else{
-                a.close();
             }
         });
     }
@@ -169,6 +191,7 @@ public class GameplayPane extends GamePane {
      */
     private void doQuitToMenu() {
         // TODO
+        game.stopCountdown();
         SceneManager.getInstance().showPane(LevelSelectPane.class);
     }
 
@@ -180,13 +203,25 @@ public class GameplayPane extends GamePane {
     void startGame(@NotNull FXGame game) {
         // TODO
         this.game = game;
+        updateInfoPane();
 
-        if(this.game.hasWon()){
-            createWinPopup();
-        }
-        if(this.game.hasLost()){
-            endGame();
-        }
+        System.out.println("game start");
+        game.addOnFlowHandler(()->{         //each flow happened
+            //System.out.println("flow");
+            game.updateState();
+            game.renderMap(gameplayCanvas);
+            if(game.hasLost()){
+                game.stopCountdown();
+                endGame();
+            }
+        });
+        game.addOnTickHandler(()->{         //each second past
+            ticksElapsed.setValue(ticksElapsed.intValue()+1);
+            updateInfoPane();
+        });
+        game.renderQueue(queueCanvas);
+        game.renderMap(gameplayCanvas);
+        game.startCountdown();
     }
 
     /**
@@ -194,6 +229,10 @@ public class GameplayPane extends GamePane {
      */
     private void endGame() {
         // TODO
-        createLosePopup();
+        Platform.runLater(()->createLosePopup());
+    }
+
+    private void updateInfoPane(){
+        Platform.runLater(()->canvasContainer.getChildren().set(0, new GameplayInfoPane(new SimpleStringProperty("Generate"), ticksElapsed, game.getNumOfSteps(), game.getNumOfUndo())));
     }
 }

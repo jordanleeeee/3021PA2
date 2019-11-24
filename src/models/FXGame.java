@@ -1,5 +1,7 @@
 package models;
 
+import controllers.AudioManager;
+import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.canvas.Canvas;
@@ -86,7 +88,9 @@ public class FXGame {
      */
     private FXGame(int rows, int cols) {
         // TODO
-        this(rows+2, cols+2, 0, null, null);//??
+        map = new Map(rows+2, cols+2);
+        pipeQueue = new PipeQueue();
+        flowTimer = new FlowTimer();
     }
 
     /**
@@ -147,8 +151,10 @@ public class FXGame {
         if(!map.tryPlacePipe(new Coordinate(row, col), pipeQueue.peek())){
             return;
         }
+        //AudioManager.getInstance().playSound(AudioManager.SoundRes.MOVE);
+
+        cellStack.push(new FillableCell(new Coordinate(row, col), pipeQueue.peek()));
         pipeQueue.consume();
-        cellStack.push(new FillableCell(new Coordinate(row, col)));
         numOfSteps.set(numOfSteps.intValue()+1);
     }
 
@@ -157,6 +163,8 @@ public class FXGame {
      */
     public void skipPipe() {
         // TODO
+        numOfSteps.set(numOfSteps.intValue()+1);
+        //System.out.println(numOfSteps.intValue());
         pipeQueue.consume();
     }
 
@@ -176,6 +184,7 @@ public class FXGame {
         else{
             pipeQueue.undo(fillableCell.getPipe().get());
             map.undo(fillableCell.coord);
+            getNumOfSteps().setValue(getNumOfSteps().intValue()+1);
         }
     }
 
@@ -206,6 +215,10 @@ public class FXGame {
         if(distance<0){
             return;
         }
+        if(distance==0){
+            map.fillBeginTile();
+            return;
+        }
         map.fillTiles(distance);
     }
 
@@ -214,7 +227,11 @@ public class FXGame {
      */
     public boolean hasWon() {
         // TODO
-        return map.checkPath();
+        if(map.checkPath()){
+            //AudioManager.getInstance().playSound(AudioManager.SoundRes.WIN);
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -222,7 +239,11 @@ public class FXGame {
      */
     public boolean hasLost() {
         // TODO
-        return (map.hasLost() && flowTimer.distance() > 0);
+        if(map.hasLost() && flowTimer.distance() > 0){
+            //AudioManager.getInstance().playSound(AudioManager.SoundRes.LOSE);
+            return true;
+        }
+        return false;
     }
 
     /**

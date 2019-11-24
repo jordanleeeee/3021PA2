@@ -34,7 +34,7 @@ public class Game {
      */
     public Game(int rows, int cols) {
         // adjust for the wall
-        map = new Map(rows + 2, cols + 2);
+        map = new Map(rows, cols);
 
         pipeQueue = new PipeQueue();
         delayBar = new DelayBar(5);

@@ -15,6 +15,7 @@ import views.BigVBox;
 import views.SideMenuVBox;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileNotFoundException;
 
 public class LevelSelectPane extends GamePane {
@@ -70,6 +71,9 @@ public class LevelSelectPane extends GamePane {
         //levelsListView.setOn
         playButton.setOnAction((e)->startGame(false));
         playRandom.setOnAction((e)->startGame(true));
+        levelsListView.getSelectionModel().selectedItemProperty().addListener(
+                (ObservableValue<? extends String> ov, String old_val, String new_val)
+                        ->onMapSelected(ov, old_val, new_val));
     }
 
     /**
@@ -84,10 +88,14 @@ public class LevelSelectPane extends GamePane {
      */
     private void startGame(final boolean generateRandom) {
         // TODO
+        SceneManager.getInstance().showPane(GameplayPane.class);
         if(generateRandom){
+            GameplayPane gameplayPane = SceneManager.getInstance().getPane(GameplayPane.class);
+            gameplayPane.startGame(new FXGame());
+        }
+        else{
 
         }
-        SceneManager.getInstance().showPane(GameplayPane.class);
     }
 
     /**
@@ -99,6 +107,8 @@ public class LevelSelectPane extends GamePane {
      */
     private void onMapSelected(ObservableValue<? extends String> observable, String oldValue, String newValue) {
         // TODO
+        System.out.println("hey.....");
+        int index = levelsListView.getSelectionModel().getSelectedIndex();
     }
 
     /**
@@ -112,7 +122,10 @@ public class LevelSelectPane extends GamePane {
     private void promptUserForMapDirectory() {
         // TODO
         DirectoryChooser d = new DirectoryChooser();
-        commitMapDirectoryChange(d.showDialog(new Stage()));
+        File file = d.showDialog(new Stage());
+        if(file != null){
+            commitMapDirectoryChange(file);
+        }
     }
 
     /**
@@ -122,11 +135,8 @@ public class LevelSelectPane extends GamePane {
      */
     private void commitMapDirectoryChange(File dir) {
         // TODO
-        try{
-            Deserializer deserializer = new Deserializer(dir.toPath());
-        }
-        catch (FileNotFoundException e){
-            return;
-        }
+//        FileFilter filter = f -> f.getName().endsWith("map");
+//        File listOfMapFile[] = dir.listFiles(filter);
+        LevelManager.getInstance().setMapDirectory(dir.toPath());
     }
 }

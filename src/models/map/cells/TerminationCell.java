@@ -79,8 +79,9 @@ public class TerminationCell extends Cell{
     @Override
     public Renderer.CellImage getImageRep() {
         // TODO
+        Direction realDir = (type==Type.SINK)? pointingTo.getOpposite(): pointingTo;
         if(isFilled){
-            switch (pointingTo){
+            switch (realDir){
                 case UP: return new Renderer.CellImage(FILLED_IMG, 0);
                 case DOWN: return new Renderer.CellImage(FILLED_IMG, 180);
                 case LEFT: return new Renderer.CellImage(FILLED_IMG, 270);
@@ -88,7 +89,7 @@ public class TerminationCell extends Cell{
             }
         }
         else {
-            switch (pointingTo){
+            switch (realDir){
                 case UP: return new Renderer.CellImage(UNFILLED_IMG, 0);
                 case DOWN: return new Renderer.CellImage(UNFILLED_IMG, 180);
                 case LEFT: return new Renderer.CellImage(UNFILLED_IMG, 270);

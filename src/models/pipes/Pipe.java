@@ -177,7 +177,7 @@ public class Pipe implements MapElement {
                     case PipePatterns.Unfilled.TOP_RIGHT: return new Renderer.CellImage(CORNER_UNFILLED, 90);
                     case PipePatterns.Unfilled.BOTTOM_LEFT: return new Renderer.CellImage(CORNER_UNFILLED, 270);
                     case PipePatterns.Unfilled.BOTTOM_RIGHT: return new Renderer.CellImage(CORNER_UNFILLED, 180);
-                    case PipePatterns.Unfilled.CROSS: return new Renderer.CellImage(CROSS_FILLED, 0);
+                    case PipePatterns.Unfilled.CROSS: return new Renderer.CellImage(CROSS_UNFILLED, 0);
                     default: throw new IllegalStateException();
                 }
             }

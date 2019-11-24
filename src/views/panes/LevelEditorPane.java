@@ -42,7 +42,7 @@ public class LevelEditorPane extends GamePane {
     private BorderPane delayBox = new BorderPane(null, null, delayField, null, delayText);
 
     private ObservableList<LevelEditorCanvas.CellSelection> cellList = FXCollections.observableList(Arrays.asList(LevelEditorCanvas.CellSelection.values()));
-    private ListView<LevelEditorCanvas.CellSelection> selectedCell = new ListView<>(cellList); //????
+    private ListView<LevelEditorCanvas.CellSelection> selectedCell = new ListView<>(); //????
 
     private Button toggleRotationButton = new BigButton("Toggle Source Rotation");
     private Button loadButton = new BigButton("Load");
@@ -73,6 +73,7 @@ public class LevelEditorPane extends GamePane {
         leftContainer.getChildren().add(loadButton);
         leftContainer.getChildren().add(saveButton);
         this.setLeft(leftContainer);
+        centerContainer.getChildren().add(levelEditor);
         this.setCenter(centerContainer);
     }
 
@@ -86,6 +87,7 @@ public class LevelEditorPane extends GamePane {
         // TODO
         selectedCell.setMinHeight(Config.LIST_CELL_HEIGHT*6);
         selectedCell.setMaxHeight(Config.LIST_CELL_HEIGHT*6);
+        levelEditor.setStyle("-fx-background-color: rgb(52, 235, 235);");
     }
 
     /**
@@ -97,17 +99,21 @@ public class LevelEditorPane extends GamePane {
         returnButton.setOnAction(e->SceneManager.getInstance().showPane(MainMenuPane.class));
         newGridButton.setOnAction(e->levelEditor.changeAttributes(rowField.getValue(),
                colField.getValue(), delayField.getValue()));
-        newGridButton.setOnAction(null);
+        newGridButton.setOnAction(e->levelEditor.changeAttributes(rowField.getValue(), colField.getValue(), delayField.getValue()));
         toggleRotationButton.setOnAction(e->levelEditor.toggleSourceTileRotation());
         loadButton.setOnAction(e->{
             if(levelEditor.loadFromFile()){
-                //sth
-            }
-            else{
-                //sth
+                rowField.setText(String.valueOf(levelEditor.getNumOfRows()));
+                colField.setText(String.valueOf(levelEditor.getNumOfCols()));
+                delayField.setText(String.valueOf(levelEditor.getAmountOfDelay()));
             }
         });
         saveButton.setOnAction(e->levelEditor.saveToFile());
-        centerContainer.setOnMouseClicked(e-> levelEditor.setTile(cellList.get(0), e.getX(), e.getY()));
+        levelEditor.setOnMouseClicked(e-> {
+            int editingIndex = selectedCell.getSelectionModel().getSelectedIndex();
+            if(editingIndex != -1) {    //if some cell is selected
+                levelEditor.setTile(cellList.get(editingIndex), e.getX(), e.getY());
+            }
+        });
     }
 }

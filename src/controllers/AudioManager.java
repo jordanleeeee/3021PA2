@@ -69,13 +69,14 @@ public class AudioManager {
         if(!enabled){
             return;
         }
-        Media audio = new Media(name);
+        Media audio = new Media(ResourceLoader.getResource("assets/audio/"+name+".mp3"));
         MediaPlayer mediaPlayer = new MediaPlayer(audio);
         soundPool.add(mediaPlayer);
         mediaPlayer.play();
-        //?????
-        mediaPlayer.dispose();
-        soundPool.remove(mediaPlayer);
+        mediaPlayer.setOnEndOfMedia(()->{
+            mediaPlayer.dispose();
+            soundPool.remove(mediaPlayer);
+        });
     }
 
     /**

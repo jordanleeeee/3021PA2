@@ -1,6 +1,7 @@
 package models;
 
 import controllers.Renderer;
+import javafx.application.Platform;
 import javafx.scene.canvas.Canvas;
 import models.pipes.Pipe;
 import org.jetbrains.annotations.NotNull;
@@ -115,7 +116,7 @@ public class PipeQueue {
      */
     public void render(@NotNull Canvas canvas) {
         // TODO
-        Renderer.renderQueue(canvas, pipeQueue);
+        Platform.runLater(() -> Renderer.renderQueue(canvas, pipeQueue));
     }
 
     /**

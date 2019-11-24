@@ -67,7 +67,10 @@ public class LevelManager {
     public void setMapDirectory(@NotNull Path mapDirectory) {
         // TODO
         this.mapDirectory = mapDirectory;
-        //???
+        while (levelNames.size() != 0){
+            levelNames.remove(0);
+        }
+        loadLevelNamesFromDisk();
     }
 
     /**
@@ -85,6 +88,20 @@ public class LevelManager {
      */
     private void loadLevelNamesFromDisk() {
         // TODO
+        List<String> files = null;
+        try(Stream<Path> paths = Files.walk(mapDirectory,1)){
+            files = paths.filter(p -> p.getFileName().toString().endsWith(".map"))
+                    .filter(Files::isRegularFile)
+                    .map(p -> mapDirectory.relativize(p).toString())
+                    .collect(Collectors.toList());
+        }
+        catch (IOException e){
+
+        }
+        for(int i=0; i<files.size(); i++){
+            System.out.println(files.get(i));
+            levelNames.add(i,files.get(i));
+        }
     }
 
     @NotNull
@@ -98,6 +115,7 @@ public class LevelManager {
     @NotNull
     public Path getCurrentLevelPath() {
         // TODO
+       // ResourceLoader.getResource()
         return null;
     }
 

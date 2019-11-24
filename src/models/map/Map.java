@@ -180,7 +180,6 @@ public class Map {
         if (cell.getPipe().isPresent()) {
             return false;
         }
-
         cells[row][col] = new FillableCell(new Coordinate(row, col), p);
         return true;
     }

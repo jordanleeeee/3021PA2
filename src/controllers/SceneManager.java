@@ -6,8 +6,10 @@ import javafx.stage.Stage;
 import models.Config;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import textgame.Main;
 import views.panes.*;
 
+import java.net.URISyntaxException;
 import java.time.Instant;
 import java.util.Map;
 
@@ -64,13 +66,12 @@ public class SceneManager {
     private Stage stage;
 
     private SceneManager() {
-
         // TODO: Add CSS styles to every scene
-        mainMenuScene.getStylesheets().add("file:resources/assets/styles/styles.css");
-        settingsScene.getStylesheets().add("file:resources/assets/styles/styles.css");
-        levelEditorScene.getStylesheets().add("file:resources/assets/styles/styles.css");
-        levelSelectScene.getStylesheets().add("file:resources/assets/styles/styles.css");
-        gameplayScene.getStylesheets().add("file:resources/assets/styles/styles.css");
+        mainMenuScene.getStylesheets().add(ResourceLoader.getResource("assets/styles/styles.css"));
+        settingsScene.getStylesheets().add(ResourceLoader.getResource("assets/styles/styles.css"));
+        levelEditorScene.getStylesheets().add(ResourceLoader.getResource("assets/styles/styles.css"));
+        levelSelectScene.getStylesheets().add(ResourceLoader.getResource("assets/styles/styles.css"));
+        gameplayScene.getStylesheets().add(ResourceLoader.getResource("assets/styles/styles.css"));
     }
 
     /**

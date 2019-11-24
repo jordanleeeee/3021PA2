@@ -19,7 +19,7 @@ public class ResourceLoader {
 
     static {
         // TODO: Initialize RES_PATH
-        RES_PATH = null;
+        RES_PATH = Paths.get("resources");
     }
 
     /**
@@ -32,6 +32,8 @@ public class ResourceLoader {
     @NotNull
     public static String getResource(@NotNull final String relativePath) {
         // TODO
-        return relativePath;
+        //System.out.println("file:"+RES_PATH.toString()+"/"+relativePath);
+        return "file:"+RES_PATH.toString()+"/"+relativePath;
+        //return relativePath;
     }
 }

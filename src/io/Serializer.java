@@ -35,9 +35,10 @@ public class Serializer {
         PrintWriter writer = new PrintWriter(outputFile);
         writer.println(prop.rows);
         writer.println(prop.cols);
+        writer.println(prop.delay);
         for (int i = 0; i < prop.rows; i++) {
             for (int j = 0; j < prop.cols; j++) {
-                writer.print(prop.cells[i][j].toSingleChar());
+                writer.print(prop.cells[i][j].toSerializedRep());
             }
             writer.println();
         }
