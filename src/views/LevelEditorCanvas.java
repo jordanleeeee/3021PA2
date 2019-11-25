@@ -110,7 +110,7 @@ public class LevelEditorCanvas extends Canvas {
         // TODO
         int col = (int)x/TILE_SIZE;  //col
         int row = (int)y/TILE_SIZE;  //row
-        System.out.println("x= "+row+" y= "+col);
+        //System.out.println("x= "+row+" y= "+col);
         if(sel == CellSelection.WALL || sel == CellSelection.CELL){
             Cell target = gameProp.cells[row][col];
             if(target instanceof TerminationCell){

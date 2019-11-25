@@ -102,7 +102,6 @@ public class GameplayPane extends GamePane {
      */
     private void onCanvasClicked(MouseEvent event) {
         // TODO
-        System.out.println("canvas clicked");
         int col = (int)event.getX()/TILE_SIZE;
         int row = (int)event.getY()/TILE_SIZE;
         game.placePipe(row,col);
@@ -147,7 +146,8 @@ public class GameplayPane extends GamePane {
         // TODO
         ButtonType back = new ButtonType("Return");
         ButtonType next = new ButtonType("Next Map");
-        Alert a = new Alert(Alert.AlertType.CONFIRMATION, "Level Cleared!", next, back);
+        Alert a = new Alert(Alert.AlertType.CONFIRMATION, null, next, back);
+        a.setHeaderText("Level Cleared!");
         a.showAndWait().ifPresent(type -> {
             if (type == back) {
                 SceneManager.getInstance().showPane(LevelSelectPane.class);
@@ -184,7 +184,8 @@ public class GameplayPane extends GamePane {
      */
     private void createLosePopup() {
         // TODO
-        Alert a = new Alert(Alert.AlertType.CONFIRMATION, "You lose!", new ButtonType("Return"));
+        Alert a = new Alert(Alert.AlertType.CONFIRMATION,null, new ButtonType("Return"));
+        a.setHeaderText("You lose!");
         a.showAndWait();
         doQuitToMenu();
     }
@@ -223,7 +224,7 @@ public class GameplayPane extends GamePane {
         this.game = game;
         updateInfoPane();
 
-        System.out.println("game start");
+        //System.out.println("game start");
         game.addOnFlowHandler(()->{         //each flow happened
             //System.out.println("flow");
             game.updateState();

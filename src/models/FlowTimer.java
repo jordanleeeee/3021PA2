@@ -136,7 +136,7 @@ public class FlowTimer {
             @Override
             public void run() {
                 ticksElapsed++;
-                System.out.println(ticksElapsed);
+                //System.out.println(ticksElapsed);
                 for(int i=0; i<onTickCallbacks.size(); i++){
                     onTickCallbacks.get(i).run();
                 }

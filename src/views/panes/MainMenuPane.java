@@ -69,7 +69,11 @@ public class MainMenuPane extends GamePane {
         // TODO
         levelSelectButton.setOnAction(e->SceneManager.getInstance().showPane(LevelSelectPane.class));
         levelEditorButton.setOnAction(e->SceneManager.getInstance().showPane(LevelEditorPane.class));
-        settingsButton.setOnAction(e->SceneManager.getInstance().showPane(SettingsPane.class));
+        settingsButton.setOnAction(e-> {
+            SceneManager.getInstance().showPane(SettingsPane.class);
+            SettingsPane settingsPane = SceneManager.getInstance().getPane(SettingsPane.class);
+            settingsPane.reset();
+        });
         quitButton.setOnAction(e->Platform.exit());
     }
 }

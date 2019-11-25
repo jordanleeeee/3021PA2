@@ -207,4 +207,11 @@ public class SettingsPane extends GamePane {
             return Optional.empty();
         }
     }
+
+    public void reset(){
+        rowsField.setText(String.valueOf(FXGame.getDefaultRows()));
+        colsField.setText(String.valueOf(FXGame.getDefaultCols()));
+        delayField.setText(String.valueOf(FlowTimer.getDefaultDelay()));
+        flowField.setText(String.valueOf(FlowTimer.getDefaultFlowDuration()));
+    }
 }

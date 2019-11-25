@@ -119,7 +119,6 @@ public class LevelSelectPane extends GamePane {
      */
     private void onMapSelected(ObservableValue<? extends String> observable, String oldValue, String newValue) {
         // TODO
-        System.out.println("hey.....");
         int index = levelsListView.getSelectionModel().getSelectedIndex();
         if(index == -1){
             playButton.setDisable(true);
@@ -127,7 +126,7 @@ public class LevelSelectPane extends GamePane {
         }
         try {
             LevelManager.getInstance().setLevel(levelsListView.getItems().get(index));
-            System.out.println(LevelManager.getInstance().getCurrentLevelPath().toString());
+            //System.out.println(LevelManager.getInstance().getCurrentLevelPath().toString());
             Deserializer deserializer = new Deserializer(LevelManager.getInstance().getCurrentLevelPath().toString());
             GameProperties gameProperties = deserializer.parseGameFile();
             Platform.runLater(() -> Renderer.renderMap(levelPreview, gameProperties.cells));

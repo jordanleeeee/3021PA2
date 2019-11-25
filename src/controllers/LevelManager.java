@@ -99,7 +99,7 @@ public class LevelManager {
             e.printStackTrace();
         }
         for(int i=0; i<files.size(); i++){
-            System.out.println(files.get(i));
+            //System.out.println(files.get(i));
             levelNames.add(i,files.get(i));
         }
     }
