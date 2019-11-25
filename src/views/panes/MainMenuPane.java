@@ -67,18 +67,7 @@ public class MainMenuPane extends GamePane {
     @Override
     void setCallbacks() {
         // TODO
-        levelSelectButton.setOnAction(e->{
-//            Platform.runLater(()->AudioManager.getInstance().playSound(AudioManager.SoundRes.WIN));
-//            Label l = new Label();
-//            Image IMAGE = new Image(ResourceLoader.getResource("assets/images/wall.png"));
-//            l.setGraphic(new ImageView(IMAGE));
-//            Scene scene = new Scene(l,50,50);
-//            Stage stage = new Stage();
-//            stage.setResizable(false);
-//            stage.setScene(scene);
-//            stage.show();
-            SceneManager.getInstance().showPane(LevelSelectPane.class);
-        });
+        levelSelectButton.setOnAction(e->SceneManager.getInstance().showPane(LevelSelectPane.class));
         levelEditorButton.setOnAction(e->SceneManager.getInstance().showPane(LevelEditorPane.class));
         settingsButton.setOnAction(e->SceneManager.getInstance().showPane(SettingsPane.class));
         quitButton.setOnAction(e->Platform.exit());

@@ -151,7 +151,7 @@ public class FXGame {
         if(!map.tryPlacePipe(new Coordinate(row, col), pipeQueue.peek())){
             return;
         }
-        //AudioManager.getInstance().playSound(AudioManager.SoundRes.MOVE);
+        AudioManager.getInstance().playSound(AudioManager.SoundRes.MOVE);
 
         cellStack.push(new FillableCell(new Coordinate(row, col), pipeQueue.peek()));
         pipeQueue.consume();
@@ -228,7 +228,7 @@ public class FXGame {
     public boolean hasWon() {
         // TODO
         if(map.checkPath()){
-            //AudioManager.getInstance().playSound(AudioManager.SoundRes.WIN);
+            AudioManager.getInstance().playSound(AudioManager.SoundRes.WIN);
             return true;
         }
         return false;
@@ -240,7 +240,7 @@ public class FXGame {
     public boolean hasLost() {
         // TODO
         if(map.hasLost() && flowTimer.distance() > 0){
-            //AudioManager.getInstance().playSound(AudioManager.SoundRes.LOSE);
+            AudioManager.getInstance().playSound(AudioManager.SoundRes.LOSE);
             return true;
         }
         return false;

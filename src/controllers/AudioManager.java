@@ -4,6 +4,7 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaException;
 import javafx.scene.media.MediaPlayer;
 
+import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -69,8 +70,8 @@ public class AudioManager {
         if(!enabled){
             return;
         }
-        Media audio = new Media(ResourceLoader.getResource("assets/audio/"+name+".mp3"));
-        //Media audio = new Media("D:\\This sem work (temp)\\comp 3021\\3021PA2\\resources\\assets\\audio\\win.mp3");
+        String path = "resources/assets/audio/"+name+".mp3";
+        Media audio = new Media(new File(path).toURI().toString());
         MediaPlayer mediaPlayer = new MediaPlayer(audio);
         soundPool.add(mediaPlayer);
         mediaPlayer.play();
