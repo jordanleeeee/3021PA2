@@ -113,12 +113,12 @@ public class Renderer {
      */
     public static void renderQueue(@NotNull Canvas canvas, @NotNull List<Pipe> pipeQueue) {
         // TODO
-        canvas.setWidth((Config.TILE_SIZE+QUEUE_TILE_PADDING)*5 - QUEUE_TILE_PADDING*2);
+        canvas.setWidth((Config.TILE_SIZE + QUEUE_TILE_PADDING)*5 - QUEUE_TILE_PADDING*2);
         canvas.setHeight(Config.TILE_SIZE + QUEUE_TILE_PADDING*2);
         GraphicsContext gc = canvas.getGraphicsContext2D();
         for(int i=0; i<pipeQueue.size(); i++){
             CellImage temp = pipeQueue.get(i).getImageRep();
-            drawRotatedImage(gc, temp.image, temp.rotation,i*(Config.LIST_CELL_HEIGHT+QUEUE_TILE_PADDING), QUEUE_TILE_PADDING);
+            drawRotatedImage(gc, temp.image, temp.rotation,i*(Config.LIST_CELL_HEIGHT + QUEUE_TILE_PADDING), QUEUE_TILE_PADDING);
         }
     }
 }

@@ -108,11 +108,11 @@ public class LevelEditorCanvas extends Canvas {
      */
     public void setTile(@NotNull CellSelection sel, double x, double y) {
         // TODO
-        int yy = (int)x/TILE_SIZE;  //col
-        int xx = (int)y/TILE_SIZE;  //row
-        System.out.println("x= "+xx+" y= "+yy);
+        int col = (int)x/TILE_SIZE;  //col
+        int row = (int)y/TILE_SIZE;  //row
+        System.out.println("x= "+row+" y= "+col);
         if(sel == CellSelection.WALL || sel == CellSelection.CELL){
-            Cell target = gameProp.cells[xx][yy];
+            Cell target = gameProp.cells[row][col];
             if(target instanceof TerminationCell){
                 if(((TerminationCell) target).type == TerminationCell.Type.SOURCE){
                     sourceCell = null;
@@ -122,33 +122,33 @@ public class LevelEditorCanvas extends Canvas {
                 }
             }
             if(sel == CellSelection.WALL){
-                setTileByMapCoord(new Wall(new Coordinate(xx,yy)));
+                setTileByMapCoord(new Wall(new Coordinate(row,col)));
             }
             else{
-                setTileByMapCoord(new FillableCell(new Coordinate(xx,yy)));
+                setTileByMapCoord(new FillableCell(new Coordinate(row,col)));
             }
         }
         else {
-            if ((xx == 0 && yy == 0) || (xx == 0 && yy == gameProp.cols - 1) || (yy == 0 && xx == gameProp.rows - 1)
-                    || (yy == gameProp.cols - 1 && xx == gameProp.rows - 1)) {
+            if ((row == 0 && col == 0) || (row == 0 && col == gameProp.cols - 1) || (col == 0 && row == gameProp.rows - 1)
+                    || (col == gameProp.cols - 1 && row == gameProp.rows - 1)) {
                 return;
             }
-            if (xx == 0 || yy == 0 || xx == gameProp.rows - 1 || yy == gameProp.cols - 1){
+            if (row == 0 || col == 0 || row == gameProp.rows - 1 || col == gameProp.cols - 1){
                 if(sinkCell!=null){
                     return;
                 }
-                if (xx == 0) {       //if it is a sink top
-                    sinkCell = new TerminationCell(new Coordinate(xx, yy), Direction.UP, TerminationCell.Type.SINK);
+                if (row == 0) {       //if it is a sink top
+                    sinkCell = new TerminationCell(new Coordinate(row, col), Direction.UP, TerminationCell.Type.SINK);
                     setTileByMapCoord(sinkCell);
-                } else if (yy == 0) {       //if it is a left
+                } else if (col == 0) {       //if it is a left
                     System.out.println("hi");
-                    sinkCell = new TerminationCell(new Coordinate(xx, yy), Direction.LEFT, TerminationCell.Type.SINK);
+                    sinkCell = new TerminationCell(new Coordinate(row, col), Direction.LEFT, TerminationCell.Type.SINK);
                     setTileByMapCoord(sinkCell);
-                } else if (xx == gameProp.rows - 1) {       //if it is a sink bottom
-                    sinkCell = new TerminationCell(new Coordinate(xx, yy), Direction.DOWN, TerminationCell.Type.SINK);
+                } else if (row == gameProp.rows - 1) {       //if it is a sink bottom
+                    sinkCell = new TerminationCell(new Coordinate(row, col), Direction.DOWN, TerminationCell.Type.SINK);
                     setTileByMapCoord(sinkCell);
                 } else {       //if it is a sink right
-                    sinkCell = new TerminationCell(new Coordinate(xx, yy), Direction.RIGHT, TerminationCell.Type.SINK);
+                    sinkCell = new TerminationCell(new Coordinate(row, col), Direction.RIGHT, TerminationCell.Type.SINK);
                     setTileByMapCoord(sinkCell);
                 }
             }
@@ -156,7 +156,7 @@ public class LevelEditorCanvas extends Canvas {
                 if(sourceCell!=null){
                     return;
                 }
-                sourceCell = new TerminationCell(new Coordinate(xx,yy), Direction.UP, TerminationCell.Type.SOURCE);
+                sourceCell = new TerminationCell(new Coordinate(row,col), Direction.UP, TerminationCell.Type.SOURCE);
                 setTileByMapCoord(sourceCell);
             }
         }
@@ -267,7 +267,6 @@ public class LevelEditorCanvas extends Canvas {
      */
     public void saveToFile() {
         // TODO
-        //if(true){
         if(checkValidity().isEmpty()){
             File target = getTargetSaveDirectory();
             if(target != null) {
@@ -294,7 +293,9 @@ public class LevelEditorCanvas extends Canvas {
     private File getTargetSaveDirectory() {
         // TODO
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setSelectedExtensionFilter(new FileChooser.ExtensionFilter("Mapfile", ".map"));
+        FileChooser.ExtensionFilter mapExtensionFilter = new FileChooser.ExtensionFilter("Map format", "*.map");
+        fileChooser.getExtensionFilters().add(mapExtensionFilter);
+        fileChooser.setSelectedExtensionFilter(mapExtensionFilter);
         return fileChooser.showSaveDialog(new Stage());
     }
 
@@ -313,9 +314,7 @@ public class LevelEditorCanvas extends Canvas {
             serializer.serializeGameProp(gameProp);
         }
         catch (IOException e){
-            //how to handle??
-            System.out.println("bug...");
-            return;
+            e.printStackTrace();
         }
     }
 
@@ -348,7 +347,7 @@ public class LevelEditorCanvas extends Canvas {
         else if(getAmountOfDelay()<1){
             return Optional.of(MSG_BAD_DELAY);
         }
-        Coordinate sinkCellFacing = sinkCell.coord.add(sinkCell.pointingTo.getOffset());
+        Coordinate sinkCellFacing = sinkCell.coord.add(sinkCell.pointingTo.getOpposite().getOffset());
         if(gameProp.cells[sinkCellFacing.row][sinkCellFacing.col] instanceof Wall){      //check if sink is blocked
             return Optional.of(MSG_SINK_TO_WALL);
         }

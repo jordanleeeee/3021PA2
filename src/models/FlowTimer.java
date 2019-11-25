@@ -101,7 +101,7 @@ public class FlowTimer {
     FlowTimer(int initialValue) {
         // TODO
         ticksElapsed = -initialValue;
-        currentValue.set(0);    //???
+        currentValue.set(0);
     }
 
     /**

@@ -70,6 +70,7 @@ public class AudioManager {
             return;
         }
         Media audio = new Media(ResourceLoader.getResource("assets/audio/"+name+".mp3"));
+        //Media audio = new Media("D:\\This sem work (temp)\\comp 3021\\3021PA2\\resources\\assets\\audio\\win.mp3");
         MediaPlayer mediaPlayer = new MediaPlayer(audio);
         soundPool.add(mediaPlayer);
         mediaPlayer.play();

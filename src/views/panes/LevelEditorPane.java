@@ -74,6 +74,7 @@ public class LevelEditorPane extends GamePane {
         leftContainer.getChildren().add(saveButton);
         this.setLeft(leftContainer);
         centerContainer.getChildren().add(levelEditor);
+        centerContainer.setAlignment(Pos.CENTER);
         this.setCenter(centerContainer);
     }
 

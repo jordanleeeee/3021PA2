@@ -41,12 +41,13 @@ public class NumberTextField extends TextField {
         if(text == ""){
             return true;
         }
-        for(int i=0; i<text.length(); i++){
-            if((int)(text.charAt(i))<58 && (int)(text.charAt(i))>47){
-                return true;
-            }
+        try{
+            Integer.parseInt(text);
         }
-        return false;
+        catch(NumberFormatException e) {
+            return false;
+        }
+        return true;
     }
 
     /**

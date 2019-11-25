@@ -34,6 +34,5 @@ public class ResourceLoader {
         // TODO
         //System.out.println("file:"+RES_PATH.toString()+"/"+relativePath);
         return "file:"+RES_PATH.toString()+"/"+relativePath;
-        //return relativePath;
     }
 }

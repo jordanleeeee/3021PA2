@@ -437,6 +437,7 @@ public class Map {
      */
     public void fillAll() {
         // TODO
+        fillBeginTile();
         fillTiles(rows*cols);
         sinkCell.setFilled();
     }

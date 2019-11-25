@@ -1,9 +1,13 @@
 package views.panes;
 
 import controllers.LevelManager;
+import controllers.Renderer;
 import controllers.SceneManager;
 import io.Deserializer;
+import io.GameProperties;
+import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.ListView;
@@ -58,6 +62,7 @@ public class LevelSelectPane extends GamePane {
     void styleComponents() {
         // TODO
         playButton.setDisable(true);
+        centerContainer.setAlignment(Pos.CENTER);
     }
 
     /**
@@ -89,12 +94,19 @@ public class LevelSelectPane extends GamePane {
     private void startGame(final boolean generateRandom) {
         // TODO
         SceneManager.getInstance().showPane(GameplayPane.class);
+        GameplayPane gameplayPane = SceneManager.getInstance().getPane(GameplayPane.class);
         if(generateRandom){
-            GameplayPane gameplayPane = SceneManager.getInstance().getPane(GameplayPane.class);
             gameplayPane.startGame(new FXGame());
         }
         else{
-
+            try {
+                Deserializer deserializer = new Deserializer(LevelManager.getInstance().getCurrentLevelPath().toString());
+                FXGame fxGame = deserializer.parseFXGame();
+                gameplayPane.startGame(fxGame);
+            }
+            catch (FileNotFoundException e){
+                e.printStackTrace();
+            }
         }
     }
 
@@ -109,6 +121,21 @@ public class LevelSelectPane extends GamePane {
         // TODO
         System.out.println("hey.....");
         int index = levelsListView.getSelectionModel().getSelectedIndex();
+        if(index == -1){
+            playButton.setDisable(true);
+            return;
+        }
+        try {
+            LevelManager.getInstance().setLevel(levelsListView.getItems().get(index));
+            System.out.println(LevelManager.getInstance().getCurrentLevelPath().toString());
+            Deserializer deserializer = new Deserializer(LevelManager.getInstance().getCurrentLevelPath().toString());
+            GameProperties gameProperties = deserializer.parseGameFile();
+            Platform.runLater(() -> Renderer.renderMap(levelPreview, gameProperties.cells));
+            playButton.setDisable(false);
+        }
+        catch (FileNotFoundException e){
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -135,8 +162,6 @@ public class LevelSelectPane extends GamePane {
      */
     private void commitMapDirectoryChange(File dir) {
         // TODO
-//        FileFilter filter = f -> f.getName().endsWith("map");
-//        File listOfMapFile[] = dir.listFiles(filter);
         LevelManager.getInstance().setMapDirectory(dir.toPath());
     }
 }

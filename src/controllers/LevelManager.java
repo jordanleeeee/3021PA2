@@ -96,7 +96,7 @@ public class LevelManager {
                     .collect(Collectors.toList());
         }
         catch (IOException e){
-
+            e.printStackTrace();
         }
         for(int i=0; i<files.size(); i++){
             System.out.println(files.get(i));
@@ -115,8 +115,7 @@ public class LevelManager {
     @NotNull
     public Path getCurrentLevelPath() {
         // TODO
-       // ResourceLoader.getResource()
-        return null;
+        return Paths.get(mapDirectory.toString()+"\\"+curLevelNameProperty.get());
     }
 
     /**
@@ -149,7 +148,7 @@ public class LevelManager {
      */
     @Nullable
     public String getAndSetNextLevel() {
-        // TODO ???
+        // TODO
         int currentNameIndex = -1;
         for(int i=0; i<levelNames.size(); i++){
             if(levelNames.get(i)==curLevelNameProperty.get()){

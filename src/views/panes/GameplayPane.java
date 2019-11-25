@@ -8,6 +8,8 @@ import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.geometry.Pos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -59,11 +61,13 @@ public class GameplayPane extends GamePane {
     @Override
     void connectComponents() {
         // TODO
-        infoPane = new GameplayInfoPane(new SimpleStringProperty("<Generate>"), ticksElapsed, new SimpleIntegerProperty(), new SimpleIntegerProperty());
-        canvasContainer.getChildren().add(infoPane);
-        canvasContainer.getChildren().add(gameplayCanvas);
-        topBar.getChildren().add(canvasContainer);
+        infoPane = new GameplayInfoPane(new SimpleStringProperty(), ticksElapsed, new SimpleIntegerProperty(), new SimpleIntegerProperty());
+        topBar.getChildren().add(infoPane);
         this.setTop(topBar);
+        topBar.setAlignment(Pos.CENTER);
+        canvasContainer.getChildren().add(gameplayCanvas);
+        canvasContainer.setAlignment(Pos.CENTER);
+        this.setCenter(canvasContainer);
         bottomBar.getChildren().add(queueCanvas);
         bottomBar.getChildren().add(quitToMenuButton);
         this.setBottom(bottomBar);
@@ -99,9 +103,9 @@ public class GameplayPane extends GamePane {
     private void onCanvasClicked(MouseEvent event) {
         // TODO
         System.out.println("canvas clicked");
-        int x = (int)event.getX()/TILE_SIZE;
-        int y = (int)event.getY()/TILE_SIZE;
-        game.placePipe(y,x);
+        int col = (int)event.getX()/TILE_SIZE;
+        int row = (int)event.getY()/TILE_SIZE;
+        game.placePipe(row,col);
         game.renderQueue(queueCanvas);
         game.renderMap(gameplayCanvas);
         updateInfoPane();
@@ -159,7 +163,20 @@ public class GameplayPane extends GamePane {
      */
     private void loadNextMap() {
         // TODO
-
+        String game = LevelManager.getInstance().getAndSetNextLevel();
+        if(game==null){
+            startGame(new FXGame());
+        }
+        else{
+            try {
+                Deserializer deserializer = new Deserializer(LevelManager.getInstance().getCurrentLevelPath().toString());
+                startGame(deserializer.parseFXGame());
+            }
+            catch (FileNotFoundException e){
+                e.printStackTrace();
+            }
+        }
+        ticksElapsed.setValue(0);
     }
 
     /**
@@ -169,7 +186,7 @@ public class GameplayPane extends GamePane {
         // TODO
         Alert a = new Alert(Alert.AlertType.CONFIRMATION, "You lose!", new ButtonType("Return"));
         a.showAndWait();
-        SceneManager.getInstance().showPane(LevelSelectPane.class);
+        doQuitToMenu();
     }
 
     /**
@@ -192,6 +209,7 @@ public class GameplayPane extends GamePane {
     private void doQuitToMenu() {
         // TODO
         game.stopCountdown();
+        ticksElapsed.setValue(0);
         SceneManager.getInstance().showPane(LevelSelectPane.class);
     }
 
@@ -233,6 +251,13 @@ public class GameplayPane extends GamePane {
     }
 
     private void updateInfoPane(){
-        Platform.runLater(()->canvasContainer.getChildren().set(0, new GameplayInfoPane(new SimpleStringProperty("Generate"), ticksElapsed, game.getNumOfSteps(), game.getNumOfUndo())));
+        StringProperty levelName;
+        if(LevelManager.getInstance().getCurrentLevelProperty().get() != null) {
+            levelName = new SimpleStringProperty(LevelManager.getInstance().getCurrentLevelPath().getFileName().toString());
+        }
+        else{
+            levelName = new SimpleStringProperty("<Generate>");
+        }
+        Platform.runLater(()->topBar.getChildren().set(0, new GameplayInfoPane(levelName, ticksElapsed, game.getNumOfSteps(), game.getNumOfUndo())));
     }
 }
