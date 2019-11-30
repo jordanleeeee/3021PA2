@@ -166,25 +166,12 @@ public class GameplayPane extends GamePane{
         }
         ButtonType back = new ButtonType("Return");
         ButtonType next = new ButtonType("Next Map");
-        //ButtonType share = new ButtonType("Share to FaceBook");
         Alert a = new Alert(Alert.AlertType.CONFIRMATION, null, next, back);
         a.setHeaderText("Level Cleared!");
         a.showAndWait().ifPresent(type -> {
             if (type == back) {
                 SceneManager.getInstance().showPane(LevelSelectPane.class);
             }
-//            else if (type == share){
-//                Facebook facebook = new FacebookFactory().getInstance();
-//                facebook.setOAuthAppId(RDFBPartnerConnection.FB_APP_ID, RDFBPartnerConnection.FB_APP_SECRET);
-//                facebook.setOAuthPermissions(RDFBPartnerConnection.perms);
-//                facebook.setOAuthAccessToken(new AccessToken(oAuthResponse.getAccessToken()));
-//
-//                try {
-//                    facebook.postStatusMessage("this post was post by my Java programme");
-//                } catch (FacebookException e) {
-//                    e.printStackTrace();
-//                }
-//            }
             else{
                 loadNextMap();
             }
