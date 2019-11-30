@@ -62,8 +62,12 @@ public class Deserializer {
      */
     @Nullable
     public FXGame parseFXGame() {
-        final var properties = parseGameFile();
-        return new FXGame(properties.rows, properties.cols, properties.delay, properties.cells, properties.pipes);
+        final GameProperties properties = parseGameFile();
+        if (properties.bestRecord == null){     //if the file have no record
+            return new FXGame(properties.rows, properties.cols, properties.delay, properties.cells, properties.pipes);
+        }
+        //if the file have record
+        return new FXGame(properties.rows, properties.cols, properties.delay, properties.cells, properties.pipes, properties.bestRecord);
     }
 
     /**
@@ -109,14 +113,24 @@ public class Deserializer {
             }
             final var cells = parseString(rows, cols, String.join("\n", mapRep));
 
-            List<Pipe> defaultPipes = null;
             String s = getFirstNonEmptyLine(reader);
+            Integer bestRecord = null;
+            if(s.contains("Best Record: ")) {
+                String best = s.substring(13);
+                bestRecord = Integer.parseInt(best);
+                s = getFirstNonEmptyLine(reader);
+            }
+
+            List<Pipe> defaultPipes = null;
             if (s != null) {
                 defaultPipes = Arrays.stream(s.split(","))
                         .map(Pipe::fromString)
                         .collect(Collectors.toList());
             }
-
+            if(bestRecord != null){
+                return new GameProperties(rows, cols, cells, delay, defaultPipes, bestRecord);
+            }
+            //System.out.println("have no record on best Score");
             return new GameProperties(rows, cols, cells, delay, defaultPipes);
         } catch (IOException ioe) {
             throw new InvalidMapException(ioe);

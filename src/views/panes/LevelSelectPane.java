@@ -120,7 +120,7 @@ public class LevelSelectPane extends GamePane {
     private void onMapSelected(ObservableValue<? extends String> observable, String oldValue, String newValue) {
         // TODO
         int index = levelsListView.getSelectionModel().getSelectedIndex();
-        if(index == -1){
+        if(index == -1 || index>levelsListView.getItems().size()-1){
             playButton.setDisable(true);
             return;
         }

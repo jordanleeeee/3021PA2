@@ -18,6 +18,7 @@ public class GameProperties {
     public Cell[][] cells;
     @Nullable
     public List<Pipe> pipes;
+    public Integer bestRecord = null;
 
     public GameProperties(int rows, int cols) {
         this.rows = rows;
@@ -41,5 +42,12 @@ public class GameProperties {
         this(rows, cols, cells, delay);
 
         this.pipes = pipes;
+    }
+
+    public GameProperties(int rows, int cols, @NotNull Cell[][] cells, int delay, @Nullable List<Pipe> pipes, int bestRecord) {
+        this(rows, cols, cells, delay);
+
+        this.pipes = pipes;
+        this.bestRecord = bestRecord;
     }
 }

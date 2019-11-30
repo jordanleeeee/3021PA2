@@ -35,6 +35,8 @@ public class SettingsPane extends GamePane {
     private final Button returnButton = new BigButton("Return");
     @NotNull
     private final Button toggleSoundButton = new BigButton("Sound FX: Enabled");
+    @NotNull
+    private final Button countDownModeButton = new BigButton("Counting Down: Disabled");
     /**
      * Text field for modifying the number of rows for generated maps.
      *
@@ -99,6 +101,7 @@ public class SettingsPane extends GamePane {
         leftContainer.getChildren().add(delayBox);
         leftContainer.getChildren().add(flowBox);
         leftContainer.getChildren().add(toggleSoundButton);
+        leftContainer.getChildren().add(countDownModeButton);
         this.setLeft(leftContainer);
         centerContainer.getChildren().add(infoText);
         this.setCenter(centerContainer);
@@ -137,6 +140,17 @@ public class SettingsPane extends GamePane {
                 AudioManager.getInstance().setEnabled(true);
             }
         });
+        countDownModeButton.setOnAction(e->{
+            if(countDownModeButton.getText() == "Counting Down: Disabled"){
+                countDownModeButton.setText("Counting Down: Enabled");
+                FXGame.setDefaultCountDownEnabled(true);
+            }
+            else{
+                countDownModeButton.setText("Counting Down: Disabled");
+                FXGame.setDefaultCountDownEnabled(false);
+            }
+        });
+
     }
 
     /**

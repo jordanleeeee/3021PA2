@@ -28,7 +28,7 @@ public class FlowTimer {
      * Backing timer.
      */
     @NotNull
-    private final Timer flowTimer = new Timer(true);
+    private Timer flowTimer = new Timer(true);
 
     /**
      * Current value of the flow timer.
@@ -78,6 +78,8 @@ public class FlowTimer {
         return defaultFlowDuration;
     }
 
+    private int delayTime;
+
     /**
      * Creates an instance with default delay.
      *
@@ -100,6 +102,7 @@ public class FlowTimer {
      */
     FlowTimer(int initialValue) {
         // TODO
+        delayTime = initialValue;
         ticksElapsed = -initialValue;
         currentValue.set(0);
     }
@@ -160,9 +163,31 @@ public class FlowTimer {
     }
 
     /**
+     * stop or restart the timer
+     * @param pause true if want to pause the time, false if want to start the timer again
+     */
+    void pauseAndResume(boolean pause){
+        if(pause){
+            stop();
+        }
+        else{
+            flowTimer = new Timer(true);
+            start();
+        }
+    }
+
+    /**
      * @return Current distance of the water flow. If this value is negative, no pipe should be filled yet.
      */
     int distance() {
         return currentValue.get();
+    }
+
+    /**
+     *  get how many ticks elapsed since the start of the game
+     * @return how many ticks elapsed since the start of the game
+     */
+    public int getRealTicksElapsed() {
+        return ticksElapsed+delayTime;
     }
 }

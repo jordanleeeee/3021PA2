@@ -33,6 +33,7 @@ public class Map {
     private final Set<Coordinate> filledTiles = new HashSet<>();
     private int prevFilledTiles = 0;
     private Integer prevFilledDistance;
+    private boolean goldFingerActivated = false;
 
     /**
      * Creates a map with size of rows x cols.
@@ -164,7 +165,7 @@ public class Map {
      * @param p   Pipe to place in cell.
      * @return {@code true} if the pipe is placed in the cell, {@code false} otherwise.
      */
-    boolean tryPlacePipe(int row, int col, @NotNull Pipe p) {
+    boolean tryPlacePipe(int row, int col, @NotNull Pipe p){
         if (row <= 0 || row >= rows) {
             return false;
         }
@@ -178,10 +179,24 @@ public class Map {
 
         var cell = (FillableCell) (cells[row][col]);
         if (cell.getPipe().isPresent()) {
+            //the gold finger is activated
+            if(!cell.getPipe().get().getFilled()){
+                goldFingerActivated = true;
+            }
             return false;
         }
         cells[row][col] = new FillableCell(new Coordinate(row, col), p);
         return true;
+    }
+
+    /**
+     * directly replace a cell with a given un-filled pipe
+     * @param row   row of the pipe that will be replaced
+     * @param col   col of the pipe that will be replaced
+     * @param p     the new pipe
+     */
+    public void forcePlacePipe(int row, int col, @NotNull Pipe p){
+        cells[row][col] = new FillableCell(new Coordinate(row, col), p);
     }
 
     @NotNull
@@ -499,5 +514,9 @@ public class Map {
      */
     public boolean hasLost() {
         return prevFilledTiles == 0;
+    }
+
+    public boolean isGoldFingerActivated() {
+        return goldFingerActivated;
     }
 }

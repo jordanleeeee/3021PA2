@@ -17,14 +17,16 @@ public class GameplayInfoPane extends BigVBox {
     private final Label timerLabel = new Label();
     private final Label numMovesLabel = new Label();
     private final Label numUndoLabel = new Label();
+    private final Label bestRecord = new Label();
 
-    public GameplayInfoPane(StringProperty levelNameProperty, IntegerProperty timerProperty, IntegerProperty numMovesProperty, IntegerProperty numUndoProperty) {
+    public GameplayInfoPane(StringProperty levelNameProperty, IntegerProperty timerProperty, IntegerProperty numMovesProperty, IntegerProperty numUndoProperty, Integer bestRecordProperty) {
         // TODO
-        bindTo(levelNameProperty, timerProperty, numMovesProperty, numUndoProperty);
+        bindTo(levelNameProperty, timerProperty, numMovesProperty, numUndoProperty, bestRecordProperty);
         this.getChildren().add(levelNameLabel);
         this.getChildren().add(timerLabel);
         this.getChildren().add(numMovesLabel);
         this.getChildren().add(numUndoLabel);
+        this.getChildren().add(bestRecord);
     }
 
     /**
@@ -50,11 +52,12 @@ public class GameplayInfoPane extends BigVBox {
      * @param numMovesProperty Number of Moves Property
      * @param numUndoProperty Number of Undoes Property
      */
-    private void bindTo(StringProperty levelNameProperty, IntegerProperty timerProperty, IntegerProperty numMovesProperty, IntegerProperty numUndoProperty) {
+    private void bindTo(StringProperty levelNameProperty, IntegerProperty timerProperty, IntegerProperty numMovesProperty, IntegerProperty numUndoProperty, Integer bestRecordProperty) {
         // TODO
         this.levelNameLabel.setText("Level: " + levelNameProperty.get());
         this.timerLabel.setText("Time: " + format(timerProperty.get()));
         this.numMovesLabel.setText("Moves: "+ numMovesProperty.get());
         this.numUndoLabel.setText("Undo Count: " + numUndoProperty.get());
+        this.bestRecord.setText("Best Record: " + ((bestRecordProperty==null)?"NA":(bestRecordProperty==3600)?"No record yet":bestRecordProperty+ "s"));
     }
 }

@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Path;
+import java.util.ArrayList;
 
 /**
  * A serializer for converting {@link GameProperties} into a map file.
@@ -41,6 +42,23 @@ public class Serializer {
                 writer.print(prop.cells[i][j].toSerializedRep());
             }
             writer.println();
+        }
+        //initial best record is 3600s which is 1h, so is impossible to win without breaking this record
+        writer.println("Best Record: "+ 3600);
+        writer.close();
+    }
+
+    /**
+     * modify the best record by updating the map file
+     * @param paragraph the new content of the file (each item in the arrayList represent one line)
+     * @throws IOException when file is not found
+     */
+    public void serializeGameProp(ArrayList<String> paragraph) throws IOException {
+        // TODO
+        File outputFile = new File(path.toString());    //will throw fileNotFound exception
+        PrintWriter writer = new PrintWriter(outputFile);
+        for(int i=0; i<paragraph.size(); i++){
+            writer.println(paragraph.get(i));
         }
         writer.close();
     }

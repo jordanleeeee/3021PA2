@@ -4,6 +4,7 @@ import controllers.AudioManager;
 import controllers.LevelManager;
 import controllers.SceneManager;
 import io.Deserializer;
+import io.Serializer;
 import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -14,28 +15,30 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import models.Config;
 import models.FXGame;
 import org.jetbrains.annotations.NotNull;
 import views.BigButton;
 import views.BigVBox;
 import views.GameplayInfoPane;
 
+import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.util.ArrayList;
 
 import static models.Config.TILE_SIZE;
+//import facebook4j.Facebook;
 
 /**
  * Pane for displaying the actual gameplay.
  */
-public class GameplayPane extends GamePane {
+public class GameplayPane extends GamePane{
 
     private HBox topBar = new HBox(20);
     private VBox canvasContainer = new BigVBox();
@@ -43,6 +46,7 @@ public class GameplayPane extends GamePane {
     private HBox bottomBar = new HBox(20);
     private Canvas queueCanvas = new Canvas();
     private Button quitToMenuButton = new BigButton("Quit to menu");
+    private Button pauseButton = new BigButton("Pause");
 
     private FXGame game;
 
@@ -61,7 +65,7 @@ public class GameplayPane extends GamePane {
     @Override
     void connectComponents() {
         // TODO
-        infoPane = new GameplayInfoPane(new SimpleStringProperty(), ticksElapsed, new SimpleIntegerProperty(), new SimpleIntegerProperty());
+        infoPane = new GameplayInfoPane(new SimpleStringProperty(), ticksElapsed, new SimpleIntegerProperty(), new SimpleIntegerProperty(), -1);
         topBar.getChildren().add(infoPane);
         this.setTop(topBar);
         topBar.setAlignment(Pos.CENTER);
@@ -70,6 +74,7 @@ public class GameplayPane extends GamePane {
         this.setCenter(canvasContainer);
         bottomBar.getChildren().add(queueCanvas);
         bottomBar.getChildren().add(quitToMenuButton);
+        bottomBar.getChildren().add(pauseButton);
         this.setBottom(bottomBar);
     }
 
@@ -90,9 +95,23 @@ public class GameplayPane extends GamePane {
     @Override
     void setCallbacks() {
         // TODO
-        gameplayCanvas.setOnMouseClicked((e)->onCanvasClicked(e));
-        quitToMenuButton.setOnAction((e)->doQuitToMenuAction());
+        gameplayCanvas.setOnMouseClicked(e->onCanvasClicked(e));
+        quitToMenuButton.setOnAction(e->doQuitToMenuAction());
         setOnKeyPressed(e->onKeyPressed(e));
+
+        pauseButton.setOnAction(event-> {
+            game.pauseAndPlay();
+            if(pauseButton.getText() == "Pause"){
+                pauseButton.setText("Play");
+                gameplayCanvas.setOnMouseClicked(null);
+                setOnKeyPressed(null);
+            }
+            else{
+                pauseButton.setText("Pause");
+                gameplayCanvas.setOnMouseClicked(e->onCanvasClicked(e));
+                setOnKeyPressed(e->onKeyPressed(e));
+            }
+        });
     }
 
     /**
@@ -111,8 +130,6 @@ public class GameplayPane extends GamePane {
 
         //check if winning after placing a pipe
         if(game.hasWon()){
-            game.stopCountdown();
-            game.fillAllPipes();
             createWinPopup();
         }
     }
@@ -144,20 +161,66 @@ public class GameplayPane extends GamePane {
      */
     private void createWinPopup() {
         // TODO
+        if(game.isRecordBeaked()){
+            recordBeakedReaction();
+        }
         ButtonType back = new ButtonType("Return");
         ButtonType next = new ButtonType("Next Map");
+        //ButtonType share = new ButtonType("Share to FaceBook");
         Alert a = new Alert(Alert.AlertType.CONFIRMATION, null, next, back);
         a.setHeaderText("Level Cleared!");
         a.showAndWait().ifPresent(type -> {
             if (type == back) {
                 SceneManager.getInstance().showPane(LevelSelectPane.class);
             }
+//            else if (type == share){
+//                Facebook facebook = new FacebookFactory().getInstance();
+//                facebook.setOAuthAppId(RDFBPartnerConnection.FB_APP_ID, RDFBPartnerConnection.FB_APP_SECRET);
+//                facebook.setOAuthPermissions(RDFBPartnerConnection.perms);
+//                facebook.setOAuthAccessToken(new AccessToken(oAuthResponse.getAccessToken()));
+//
+//                try {
+//                    facebook.postStatusMessage("this post was post by my Java programme");
+//                } catch (FacebookException e) {
+//                    e.printStackTrace();
+//                }
+//            }
             else{
                 loadNextMap();
             }
         });
     }
 
+    /**
+     *  get the map file of the current game, change the value of best record in the file
+     *  by calling void serializeGameProp(Arraylist<String> paragraph)
+     */
+    private void recordBeakedReaction(){
+        File file = new File(LevelManager.getInstance().getCurrentLevelPath().toString());
+        try {
+            FileReader fr = new FileReader(file);
+            BufferedReader br = new BufferedReader(fr);
+            String line;
+            ArrayList<String> list = new ArrayList<>();
+            while ((line = br.readLine()) != null) {
+                list.add(line);
+            }
+            //System.out.println(list.toString());
+            for(int i=0; i<list.size(); i++){
+                if(list.get(i).contains("Best Record: ")){
+                    list.set(i, "Best Record: "+ game.getBestRecord());
+                }
+            }
+            //System.out.println(list.toString());
+            Serializer serializer = new Serializer(file.toPath());
+            serializer.serializeGameProp(list);
+            fr.close();
+            br.close();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+    }
     /**
      * Loads the next map in the series, or generate a new map if one is not available.
      */
@@ -225,6 +288,9 @@ public class GameplayPane extends GamePane {
         updateInfoPane();
 
         //System.out.println("game start");
+        if(FXGame.isDefaultCountDownEnabled()){
+            ticksElapsed.setValue(100);
+        }
         game.addOnFlowHandler(()->{         //each flow happened
             //System.out.println("flow");
             game.updateState();
@@ -235,8 +301,15 @@ public class GameplayPane extends GamePane {
             }
         });
         game.addOnTickHandler(()->{         //each second past
-            ticksElapsed.setValue(ticksElapsed.intValue()+1);
+            ticksElapsed.setValue(FXGame.isDefaultCountDownEnabled()?ticksElapsed.intValue()-1:ticksElapsed.intValue()+1);
             updateInfoPane();
+            if(FXGame.isDefaultCountDownEnabled()){
+                if(ticksElapsed.get()<=0){
+                    game.stopCountdown();
+                    AudioManager.getInstance().playSound(AudioManager.SoundRes.LOSE);
+                    endGame();
+                }//lose
+            }
         });
         game.renderQueue(queueCanvas);
         game.renderMap(gameplayCanvas);
@@ -259,6 +332,6 @@ public class GameplayPane extends GamePane {
         else{
             levelName = new SimpleStringProperty("<Generate>");
         }
-        Platform.runLater(()->topBar.getChildren().set(0, new GameplayInfoPane(levelName, ticksElapsed, game.getNumOfSteps(), game.getNumOfUndo())));
+        Platform.runLater(()->topBar.getChildren().set(0, new GameplayInfoPane(levelName, ticksElapsed, game.getNumOfSteps(), game.getNumOfUndo(), game.getBestRecord())));
     }
 }
