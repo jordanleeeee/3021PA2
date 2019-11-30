@@ -12,14 +12,5 @@
     <orderEntry type="library" name="org.openjfx:javafx-controls:12.0.2" level="project" />
     <orderEntry type="library" name="org.openjfx:javafx-graphics:12.0.2" level="project" />
     <orderEntry type="library" name="org.openjfx:javafx-media:12.0.2" level="project" />
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://E:/softwere/facebook API/facebook4j-core-2.4.13.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
   </component>
 </module>
